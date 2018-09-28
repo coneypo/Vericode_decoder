@@ -4,54 +4,17 @@
 # Blog:     http://www.cnblogs.com/AdaminXie
 # GitHub:   https://github.com/coneypo/Vericode_decoder
 
+# crop into 4 images
+
 import cv2
 import numpy as np
 
-from PIL import Image
-from sklearn.externals import joblib
+path_test_image = "../data/images/for_test/code_2.jpg"
 
 
-# ml model的位置
-path_models = "../data/ml_models/"
+def get_single_num(path_image):
 
-
-# 提取单张图像的特征
-def get_features_single(img):
-    # 转为灰度
-    img = img.convert('1')
-
-    # 提取特征
-    # 30*30 的图像
-    pixel_cnt_list = []
-
-    height, width = 30, 30
-
-    # 统计 30 行每行的黑点数
-    for y in range(height):
-        pixel_cnt_x = 0
-        for x in range(width):
-            if img.getpixel((x, y)) == 0:  # 黑点
-                pixel_cnt_x += 1
-        pixel_cnt_list.append(pixel_cnt_x)
-
-    # 统计 30 列每列的黑点数
-    for x in range(width):
-        pixel_cnt_y = 0
-        for y in range(height):
-            if img.getpixel((x, y)) == 0:  # 黑点
-                pixel_cnt_y += 1
-        pixel_cnt_list.append(pixel_cnt_y)
-
-    return pixel_cnt_list
-
-
-# 获取特征，调用模型计算
-LR = joblib.load(path_models + "model_LR.m")
-
-
-def get_single_num(path_test_image):
-
-    img = cv2.imread(path_test_image)
+    img = cv2.imread(path_image)
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # 反转颜色
@@ -60,19 +23,22 @@ def get_single_num(path_test_image):
     # 返回三个值，图像，轮廓，轮廓的层析结构
     image, contours, hierarchy = cv2.findContours(img_inv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+    print("Nums of contours:", len(contours), "\n")
     contours_list = []
 
     # ii = 0,1,2,3
     for ii in range(len(contours)):
         contours_list.append(contours[3 - ii])
 
-    # Store the decoded number
-    num_decoded = ""
+    path_save_single_number = "../data/images/tmp_single_number/"
 
     # 外矩阵
     # cv2.boundingRect 计算轮廓的垂直边界最小矩形
     for i in range(len(contours)):
         x, y, w, h = cv2.boundingRect(contours_list[i])
+        print("Number:", i+1)
+        print("Position:(", x, ",", y, ')\t', "(", x + w, ",", y + h, ")")
+        # cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 1)
 
         height = h
         width = w
@@ -91,13 +57,14 @@ def get_single_num(path_test_image):
                 # img [height高度][width宽度]
                 img_blank[ii2 + 5][jj2 + 5] = img[y + ii2][x + jj2]
 
-        img_test = Image.fromarray(img_blank)
+        cv2.imwrite(path_save_single_number + "img_num_" + str(i + 1) + ".jpg", img_blank)
 
-        features_single = get_features_single(img_test)
-        predict_LR = LR.predict([features_single])
-        num_decoded = num_decoded+str(predict_LR[0])
+        print("Saved to:", path_save_single_number + "img_num_" + str(i + 1) + ".jpg")
+        print('\n')
+    print('\n')
 
-    print("Decoded number:", num_decoded)
+    # cv2.imshow("img", img)
+    # cv2.waitKey(0)
 
 
-get_single_num("../data/images/for_test/tmp.jpg")
+get_single_num(path_test_image)

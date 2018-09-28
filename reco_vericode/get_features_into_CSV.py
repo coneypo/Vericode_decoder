@@ -1,11 +1,10 @@
-# created at 2018-01-29
-# updated at 2018-09-28
+# created at 2018-09-28
 
 # Author:   coneypo
 # Blog:     http://www.cnblogs.com/AdaminXie
-# GitHub:   https://github.com/coneypo/ML_handwritten_number
+# GitHub:   https://github.com/coneypo/Vericode_decoder
 
-# 提取特征写入CSV
+# 提取特征写入 CSV
 
 from PIL import Image
 import csv
@@ -15,21 +14,20 @@ import os
 # 提取单张图像的特征
 def get_features_single(img):
     # 提取特征
-    # 30*30 的图像
+    # 30 * 30 的图像
     pixel_cnt_list = []
 
     height, width = 30, 30
 
-    # 统计30行每行的黑点数
+    # 统计 30 行每行的黑点数
     for y in range(height):
         pixel_cnt_x = 0
         for x in range(width):
-            print(img.getpixel((x, y)))
             if img.getpixel((x, y)) == 0:  # 黑点
                 pixel_cnt_x += 1
         pixel_cnt_list.append(pixel_cnt_x)
 
-    # 统计30列每列的黑点数
+    # 统计 30 列每列的黑点数
     for x in range(width):
         pixel_cnt_y = 0
         for y in range(height):
@@ -38,13 +36,6 @@ def get_features_single(img):
         pixel_cnt_list.append(pixel_cnt_y)
     return pixel_cnt_list
 
-# img = Image.open("/home/con/code/python/ML_handwritten_number/data/data_images/num_1/1_714.png")
-
-img = Image.open("../data/images/database_single_number/num_0/img_nums_107_2.jpg")
-print(img)
-img = img.convert('L')
-
-print(get_features_single(img))
 
 # 遍历文件夹提取特征存入 CSV
 def save_features_to_CSV():
@@ -72,6 +63,7 @@ def save_features_to_CSV():
 
                     # 处理读取单个图像文件提取特征
                     img = Image.open(path_images + "num_" + str(i)+"/" + num_list[j])
+                    img = img.convert('1')
                     pixel_cnt_list = []
                     pixel_cnt_list = get_features_single(img)
                     pixel_cnt_list.append(i)
@@ -82,4 +74,4 @@ def save_features_to_CSV():
         print("样本总数:", sum_images)
 
 
-# save_features_to_CSV()
+save_features_to_CSV()

@@ -1,9 +1,8 @@
-# created at 2018-01-29
-# updated at 2018-09-28
+# created at 2018-09-28
 
 # Author:   coneypo
 # Blog:     http://www.cnblogs.com/AdaminXie
-# GitHub:   https://github.com/coneypo/ML_handwritten_number
+# GitHub:   https://github.com/coneypo/Vericode_decoder
 
 
 from sklearn.model_selection import train_test_split
@@ -31,8 +30,8 @@ def pre_data():
         column_names.append("feature_" + str(i))
     column_names.append("true_number")
 
-    # 读取csv
-    data = pd.read_csv("../data/csvs/"+(os.listdir("../data/csvs/"))[0], names=column_names)
+    # 读取 CSV
+    data = pd.read_csv("../data/csvs/tmp.csv", names=column_names)
 
     # 提取数据集
     global X_train, X_test, y_train, y_test
