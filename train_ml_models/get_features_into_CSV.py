@@ -10,31 +10,7 @@ from PIL import Image
 import csv
 import os
 
-
-# 提取单张图像的特征
-def get_features_single(img):
-    # 提取特征
-    # 30 * 30 的图像
-    pixel_cnt_list = []
-
-    height, width = 30, 30
-
-    # 统计 30 行每行的黑点数
-    for y in range(height):
-        pixel_cnt_x = 0
-        for x in range(width):
-            if img.getpixel((x, y)) == 0:  # 黑点
-                pixel_cnt_x += 1
-        pixel_cnt_list.append(pixel_cnt_x)
-
-    # 统计 30 列每列的黑点数
-    for x in range(width):
-        pixel_cnt_y = 0
-        for y in range(height):
-            if img.getpixel((x, y)) == 0:  # 黑点
-                pixel_cnt_y += 1
-        pixel_cnt_list.append(pixel_cnt_y)
-    return pixel_cnt_list
+from reco_vericode import tools
 
 
 # 遍历文件夹提取特征存入 CSV
@@ -64,8 +40,7 @@ def save_features_to_CSV():
                     # 处理读取单个图像文件提取特征
                     img = Image.open(path_images + "num_" + str(i)+"/" + num_list[j])
                     img = img.convert('1')
-                    pixel_cnt_list = []
-                    pixel_cnt_list = get_features_single(img)
+                    pixel_cnt_list = tools.get_features_single(img)
                     pixel_cnt_list.append(i)
 
                     # 写入 CSV

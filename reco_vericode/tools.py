@@ -1,21 +1,3 @@
-# created at 2018-09-28
-
-# Author:   coneypo
-# Blog:     http://www.cnblogs.com/AdaminXie
-# GitHub:   https://github.com/coneypo/Vericode_decoder
-
-import cv2
-import os
-import numpy as np
-
-from PIL import Image
-from sklearn.externals import joblib
-
-
-# ml model的位置
-path_models = "../data/ml_models/"
-
-
 # 提取单张图像的特征
 def get_features_single(img):
     # 转为灰度
@@ -46,14 +28,21 @@ def get_features_single(img):
     return pixel_cnt_list
 
 
-# 获取特征，调用模型计算
-LR = joblib.load(path_models + "model_LR.m")
+import cv2
+import numpy as np
+
+from PIL import Image
+from sklearn.externals import joblib
+
+# ml model的位置
+path_models = "../data/ml_models/"
 
 
-def get_single_num(path_test_image):
+def decode_vericode(img_cv2):
+    # 获取特征，调用模型计算
+    LR = joblib.load(path_models + "model_LR.m")
 
-    img = cv2.imread(path_test_image)
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2GRAY)
 
     # 反转颜色
     ret, img_inv = cv2.threshold(img_gray, 127, 255, cv2.THRESH_BINARY_INV)
@@ -83,30 +72,20 @@ def get_single_num(path_test_image):
         # 生成一张新的空白背景的图像
         for ii1 in range(0, 30):
             for jj1 in range(0, 30):
-                # img [height高度][width宽度]
+                # img_cv2 [height高度][width宽度]
                 img_blank[ii1][jj1] = (255, 255, 255)
 
         # 写入分割下来的数据
         for ii2 in range(0, height + 5):
             for jj2 in range(0, width + 5):
-                # img [height高度][width宽度]
-                img_blank[ii2 + 5][jj2 + 5] = img[y + ii2][x + jj2]
+                # img_cv2 [height高度][width宽度]
+                img_blank[ii2 + 5][jj2 + 5] = img_cv2[y + ii2][x + jj2]
 
         img_test = Image.fromarray(img_blank)
 
         features_single = get_features_single(img_test)
         predict_LR = LR.predict([features_single])
-        num_decoded = num_decoded+str(predict_LR[0])
+        num_decoded = num_decoded + str(predict_LR[0])
 
     print("Decoded number:", num_decoded)
-
-
-vericode_to_decode_list = os.listdir("../data/images/for_test/")
-print(vericode_to_decode_list)
-vericode_to_decode_list.sort()
-print(vericode_to_decode_list)
-
-for vericode_to_decode in vericode_to_decode_list:
-    print(vericode_to_decode)
-    get_single_num("../data/images/for_test/"+vericode_to_decode)
-    print('\n')
+    return num_decoded

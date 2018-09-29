@@ -1,3 +1,22 @@
-1. get images of vericode from ecnu
-2. use cv2 to find 4 boundings 
-3. save 4 boundings into images and use ml models to recognize numbers
+# Vericode decoder
+
+Step 1: &nbsp;  Get images of vericode 
+>get_vericode/get_vericode.py
+
+Step 2: &nbsp;  Genearate  database for vericode numbers  *(manual separate images of single numbers needed)*
+>/data/images/database_single_number
+
+Step 3: &nbsp;  Get features from database 
+>/train_ml_models/get_features_into_CSV.py
+
+Step 4: &nbsp;  Train ML models for vericode numbers 
+>/train_ml_models/generate_ml_models.py
+
+Step 5: &nbsp; Use ML models to decode vericode 
+>/reco_vericode/reco_vericode*.py
+
+<br>
+
+
+Author : &nbsp; &nbsp; &nbsp; &nbsp; coneypo
+Updated: &nbsp; &nbsp; 29 Sep
