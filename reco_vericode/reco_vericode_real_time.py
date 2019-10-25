@@ -17,14 +17,15 @@ from reco_vericode import tools
 
 path_save = "../data/images/for_test/"
 
-url_vericode = "https://portal1.ecnu.edu.cn/cas/code"
+# url_vericode = "https://portal1.ecnu.edu.cn/cas/code"
+url_vericode = "http://lxs.ecnu.edu.cn/EN/book.php?act=chkcode"
 
 # 请求响应获取图片
 request.urlretrieve(url_vericode, path_save + "test.jpg")
 
 # 存储为 jpg
 img_get = Image.open(path_save + "test.jpg")
-
+print(img_get.size)
 img_PIL = Image.new("RGB", img_get.size, (255, 255, 255))
 img_PIL.paste(img_get)
 

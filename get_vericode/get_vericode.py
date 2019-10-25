@@ -13,10 +13,11 @@ import os
 path_save = "../data/images/for_test/"
 
 url_vericode = "https://portal1.ecnu.edu.cn/cas/code"
+url_vericode_lxs = "http://lxs.ecnu.edu.cn/EN/book.php?act=chkcode"
 
 for i in range(20):
     # 请求响应获取图片
-    request.urlretrieve(url_vericode, path_save + "test.jpg")
+    request.urlretrieve(url_vericode_lxs, path_save + "test.jpg")
 
     # 存储为 jpg
     img_get = Image.open(path_save + "test.jpg")
@@ -27,4 +28,4 @@ for i in range(20):
     img_test.save(path_save + "vericode_" + str(i+1) + ".jpg")
 
     # delete the saved images
-    os.remove(path_save + "test.jpg")
+    # os.remove(path_save + "test.jpg")

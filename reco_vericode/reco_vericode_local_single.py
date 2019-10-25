@@ -9,5 +9,6 @@ import cv2
 from reco_vericode import tools
 
 img_test = cv2.imread("../data/images/for_test/vericode_1.jpg")
-
+cv2.imshow("img", img_test)
 tools.decode_vericode(img_test)
+#scv2.waitKey(0)
